@@ -6,6 +6,7 @@ import appname.constants as constants
 from appname.forms import SimpleForm
 from appname.forms.login import LoginForm, SignupForm, RequestPasswordResetForm, ChangePasswordForm
 from appname.models import db
+from appname.models.employee import Employee
 from appname.models.user import User
 from appname.models.teams import TeamMember
 from appname.mailers.auth import ConfirmEmail, ResetPassword
@@ -50,15 +51,8 @@ def signup():
     form = SignupForm(invite_secret=request.args.get('invite_secret'))
 
     if form.validate_on_submit():
-        team_secret = form.invite_secret.data
-        invite = (TeamMember.query.filter_by(invite_secret=team_secret, activated=False)
-                            .one_or_none())
-
-        if invite:
-            user = User(form.email.data, form.password.data,
-                        email_confirmed=True, team=invite.team)
-            invite.user = user
-            db.session.add(invite)
+        if form.is_employee.data:
+            user = Employee(form.email.data, form.password.data)
         else:
             user = User(form.email.data, form.password.data)
         db.session.add(user)

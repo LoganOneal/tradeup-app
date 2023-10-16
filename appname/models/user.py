@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy_utils.types import EncryptedType
 from sqlalchemy_utils.types.encrypted.encrypted_type import FernetEngine
-
+from sqlalchemy import case
 from flask_dance.consumer.storage.sqla import OAuthConsumerMixin
 
 from appname.models import db, Model, ModelProxy, global_encryption_key_iv
@@ -30,6 +30,16 @@ class User(Model, UserMixin):
     encrypted_totp_secret = db.Column(EncryptedType(db.String,
                                                     key=global_encryption_key_iv,
                                                     engine=FernetEngine))
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'user',
+        "polymorphic_on": case(
+            [
+                (type == "employee", "employee"),
+            ],
+            else_="user"
+        )
+    }
 
     GDPR_EXPORT_COLUMNS = {
         "id": "ID of the user",

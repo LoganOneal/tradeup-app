@@ -2,7 +2,7 @@ from appname.models import db, Model
 
 class WorkExperience(Model):
     id = db.Column(db.Integer, primary_key=True)
-    employee_id = db.Column(db.Integer, db.ForeignKey('employee.id'), nullable=False)
+    employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'), nullable=False)
     job_title = db.Column(db.String())
     company = db.Column(db.String())
     city = db.Column(db.String())
