@@ -55,6 +55,8 @@ def add_experience():
             employee=employee,
             job_title=form.job_title.data,
             company=form.company.data,
+            city=form.city.data,
+            state=form.state.data,
             start_date=form.start_date.data,
             end_date=form.end_date.data,
             current_job=form.current_position.data,

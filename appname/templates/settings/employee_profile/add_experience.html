@@ -15,8 +15,10 @@ import render_field %} {% block title %}appname account settings{% endblock %}
             <div class="card-body">
               {{ form.hidden_tag() }}
               {{ render_field(form.company, placeholder='Company Name') }}
-              {{ render_field(form.job_title, placeholder='Job Title') }} {{
-              render_field(form.start_date, placeholder='Start Date') }} {{
+              {{ render_field(form.job_title, placeholder='Job Title') }} 
+                {{ render_field(form.city, placeholder='City') }}
+                {{ render_field(form.state, placeholder='State') }}
+              {{ render_field(form.start_date, placeholder='Start Date') }} {{
               render_field(form.end_date, placeholder='End Date') }} {{
               render_field(form.current_position) }} {{
               render_field(form.description, placeholder='Description') }}

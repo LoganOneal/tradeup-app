@@ -14,7 +14,8 @@ class WorkExperienceForm(BaseForm):
     end_date = DateField("End Date")
     current_position = BooleanField("Current Position", default=False)
     description = StringField("Description")
-
+    city = StringField("City")
+    state = StringField("State")
 
 class ChangeEmployeeProfileForm(ChangeProfileForm):
     bio = StringField("Bio", validators=[validators.InputRequired()])
