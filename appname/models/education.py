@@ -2,7 +2,7 @@ from appname.models import db, Model
 
 class Education(Model):
     id = db.Column(db.Integer, primary_key=True)
-    employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'), nullable=False)
+    employee_id = db.Column(db.Integer, db.ForeignKey('employee.id'), nullable=False)
     school_name = db.Column(db.String())
     degree = db.Column(db.String())
     city = db.Column(db.String())

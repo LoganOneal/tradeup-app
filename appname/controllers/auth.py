@@ -51,10 +51,12 @@ def signup():
     form = SignupForm(invite_secret=request.args.get('invite_secret'))
 
     if form.validate_on_submit():
+        user = User(form.email.data, form.password.data)
+
         if form.is_employee.data:
-            user = Employee(form.email.data, form.password.data)
-        else:
-            user = User(form.email.data, form.password.data)
+            employee = Employee(user=user)
+            db.session.add(employee)
+
         db.session.add(user)
         db.session.commit()
         session['current_team_membership_id'] = user.primary_membership_id

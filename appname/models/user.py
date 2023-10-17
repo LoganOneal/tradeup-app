@@ -25,6 +25,10 @@ class User(Model, UserMixin):
     email_confirmed = db.Column(db.Boolean())
     user_api_key_hash = db.Column(db.String())
     billing_customer_id = db.Column(db.String())
+    bio = db.Column(db.String())
+
+    # if is employee
+    employee = db.relationship("Employee", uselist=False, back_populates="user")
 
     # Encrypted Secret (used for Two Factor Authentication)
     encrypted_totp_secret = db.Column(EncryptedType(db.String,

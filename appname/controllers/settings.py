@@ -5,21 +5,66 @@ from flask_login import login_required, current_user
 from appname.constants import SUPPORT_EMAIL
 from appname.extensions import stripe
 from appname.models import db
+from appname.models.employee import Employee
+from appname.models.user import User
+from appname.models.workexperience import WorkExperience
 from appname.forms import SimpleForm
 from appname.forms.login import ChangePasswordForm
-from appname.forms.account import ChangeProfileForm
+from appname.forms.account import ChangeEmployeeProfileForm, ChangeProfileForm, WorkExperienceForm
 from appname.helpers.gdpr import GDPRExport
 from appname.utils.token import generate_api_secret
 from appname.billing_plans import plans_by_name
 
-from appname.extensions import stripe
 
 settings_blueprint = Blueprint('user_settings', __name__)
 
 @settings_blueprint.route('/settings')
 @login_required
 def index():
-    return redirect(url_for("user_settings.account"))
+    if isinstance(current_user, Employee):
+        return redirect(url_for("user_settings.employee_profile"))
+
+    return redirect(url_for("user_settings.employee_profile"))
+
+
+@settings_blueprint.route('/settings/employee_profile', methods=['GET', 'POST'])
+@login_required
+def employee_profile():
+    employee = Employee.query.filter_by(user_id=current_user.id).first()
+
+    form = ChangeEmployeeProfileForm()
+    if form.validate_on_submit():
+        current_user.full_name = form.name.data
+        current_user.bio = form.bio.data
+
+        db.session.add(current_user)
+        db.session.commit()
+
+    return render_template('/settings/employee_profile.html', form=form, employee=employee)
+
+
+@settings_blueprint.route('/settings/employee_profile/add_experience', methods=['GET', 'POST'])
+@login_required
+def add_experience():
+    employee = Employee.query.filter_by(user_id=current_user.id).first()
+
+    form = WorkExperienceForm()
+
+    if form.validate_on_submit():
+        work_experience = WorkExperience(
+            employee=employee,
+            job_title=form.job_title.data,
+            company=form.company.data,
+            start_date=form.start_date.data,
+            end_date=form.end_date.data,
+            current_job=form.current_position.data,
+            description=form.description.data
+        )
+
+        db.session.add(work_experience)
+        db.session.commit()
+
+    return render_template('/settings/employee_profile/add_experience.html', form=form)
 
 @settings_blueprint.route('/settings/account', methods=['GET', 'POST'])
 @login_required
@@ -29,7 +74,6 @@ def account():
         current_user.full_name = form.name.data
         db.session.add(current_user)
         db.session.commit()
-
 
     return render_template('/settings/account.html', form=form)
 

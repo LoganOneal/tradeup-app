@@ -1,0 +1,60 @@
+{% extends "tabler/dashboard_base.html" %} {% from "helpers/_formhelpers.html"
+import render_field %} {% block title %}appname account settings{% endblock %}
+{% block body %}
+
+<div class="my-3 my-md-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-3">{% include 'settings/sidebar.html' %}</div>
+      <div class="col-9">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Employee Profile Information</h3>
+          </div>
+          <form
+            role="form"
+            action="{{ url_for('user_settings.employee_profile') }}"
+            method="post"
+          >
+            <div class="card-body">
+              {{ form.hidden_tag() }} {{ render_field(form.name,
+              value=(current_user.full_name or ''), placeholder='Your Name') }}
+            </div>
+            <div class="card-body">
+              {{ form.hidden_tag() }} {{ render_field(form.bio,
+              value=(current_user.bio or ''), placeholder='Your bio') }}
+            </div>
+            <div class="card-footer text-left">
+              <div class="d-flex">
+                <button type="submit" class="btn btn-primary">Save</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Work Experiences</h4>
+            <ul class="list-group">
+              {% for experience in employee.work_experiences %}
+              <li class="list-group-item">{{ experience }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="card-footer text-left">
+            <div class="d-flex">
+              <a
+                href="{{ url_for('user_settings.add_experience') }}"
+                class="list-group-item list-group-item-action d-flex align-items-center  {{ 'active' if request.endpoint == 'user_settings.api' }}"
+              >
+                <span class="icon mr-3"><i class="fe fe-plus"></i></span>Add
+                experince
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
