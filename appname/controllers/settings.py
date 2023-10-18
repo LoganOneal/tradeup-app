@@ -5,12 +5,13 @@ from flask_login import login_required, current_user
 from appname.constants import SUPPORT_EMAIL
 from appname.extensions import stripe
 from appname.models import db
+from appname.models.education import Education
 from appname.models.employee import Employee
 from appname.models.user import User
 from appname.models.workexperience import WorkExperience
 from appname.forms import SimpleForm
 from appname.forms.login import ChangePasswordForm
-from appname.forms.account import ChangeEmployeeProfileForm, ChangeProfileForm, WorkExperienceForm
+from appname.forms.account import ChangeEmployeeProfileForm, ChangeProfileForm, EducationForm, WorkExperienceForm
 from appname.helpers.gdpr import GDPRExport
 from appname.utils.token import generate_api_secret
 from appname.billing_plans import plans_by_name
@@ -67,6 +68,32 @@ def add_experience():
         db.session.commit()
 
     return render_template('/settings/employee_profile/add_experience.html', form=form)
+
+
+@settings_blueprint.route('/settings/employee_profile/add_education', methods=['GET', 'POST'])
+@login_required
+def add_education():
+    employee = Employee.query.filter_by(user_id=current_user.id).first()
+
+    form = EducationForm()
+
+    if form.validate_on_submit():
+        education = Education(
+            employee=employee,
+            school_name=form.school_name.data,
+            degree=form.degree.data,
+            city=form.city.data,
+            state=form.state.data,
+            start_date=form.start_date.data,
+            end_date=form.end_date.data,
+            currently_enrolled=form.currently_enrolled.data,
+            description=form.description.data
+        )
+
+        db.session.add(education)
+        db.session.commit()
+
+    return render_template('/settings/employee_profile/add_education.html', form=form)
 
 @settings_blueprint.route('/settings/account', methods=['GET', 'POST'])
 @login_required

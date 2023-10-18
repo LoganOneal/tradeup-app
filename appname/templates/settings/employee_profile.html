@@ -38,11 +38,10 @@ import render_field %} {% block title %}appname account settings{% endblock %}
               {% for experience in employee.work_experiences %}
               <li class="list-group-item">
                 <b>{{ experience.company_name }}</b>
-                {{ experience.job_title }}<br>
-                {{ experience.start_date }} - 
-                {{ experience.end_date }}<br>
-                {{ experience.location }}<br>
-                {{ experience.description }}<br>
+                {{ experience.job_title }}<br />
+                {{ experience.start_date }} - {{ experience.end_date }}<br />
+                {{ experience.location }}<br />
+                {{ experience.description }}<br />
               </li>
               {% endfor %}
             </ul>
@@ -55,6 +54,33 @@ import render_field %} {% block title %}appname account settings{% endblock %}
               >
                 <span class="icon mr-3"><i class="fe fe-plus"></i></span>Add
                 experince
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Education</h4>
+            <ul class="list-group">
+              {% for education in employee.educations %}
+              <li class="list-group-item">
+                <b>{{ education.school_name }}</b>
+                {{ education.degree }}<br />
+                {{ education.start_date }} - {{ education.end_date }}<br />
+                {{ education.location }}<br />
+                {{ education.description }}<br />
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="card-footer text-left">
+            <div class="d-flex">
+              <a
+                href="{{ url_for('user_settings.add_education') }}"
+                class="list-group-item list-group-item-action d-flex align-items-center  {{ 'active' if request.endpoint == 'user_settings.api' }}"
+              >
+                <span class="icon mr-3"><i class="fe fe-plus"></i></span>Add
+                education
               </a>
             </div>
           </div>
